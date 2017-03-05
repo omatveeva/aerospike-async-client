@@ -4,6 +4,7 @@ import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.Record;
+import com.aerospike.client.async.AsyncClient;
 import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.WritePolicy;
 
@@ -19,8 +20,8 @@ public class Main {
         WritePolicy policy = new WritePolicy();
         policy.timeout = 50;  // 50 millisecond timeout.
 
-        try (AerospikeClient client = new AerospikeClient("127.0.0.1", 3000)) {
-            AerospikeClientAsyncWrapper wrapper = new AerospikeClientAsyncWrapper(client, executor);
+        try (AsyncClient client = new AsyncClient("127.0.0.1", 3000)) {
+            AerospikeClientAsyncWrapper wrapper = new AerospikeClientAsyncWrapper(client);
 
             Key key = new Key("test", "testset", "key1");
             client.put(policy, key, new Bin("name", "hello"), new Bin("value", 12345));
