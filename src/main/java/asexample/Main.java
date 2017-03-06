@@ -1,11 +1,9 @@
 package asexample;
 
-import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.Record;
 import com.aerospike.client.async.AsyncClient;
-import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.WritePolicy;
 
 import java.util.concurrent.*;
@@ -14,7 +12,6 @@ import java.util.concurrent.*;
  * Created by olga on 03.03.17.
  */
 public class Main {
-    static ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         WritePolicy policy = new WritePolicy();
@@ -24,16 +21,14 @@ public class Main {
             AerospikeClientAsyncWrapper wrapper = new AerospikeClientAsyncWrapper(client);
 
             Key key = new Key("test", "testset", "key1");
-            client.put(policy, key, new Bin("name", "hello"), new Bin("value", 12345));
+            wrapper.put(policy, key, new Bin("name", "hello"), new Bin("value", 12345), new Bin("abc", "def"));
 
             CompletionStage<Record> recordStage =  wrapper.get(policy, key);
             recordStage
-                    .thenApply(record -> record.getInt("value"))
+                    .thenApply(record -> record.getString("abc"))
                     .thenAccept(System.out::println)
                     .toCompletableFuture().get();
         }
-
-        executor.shutdown();
     }
 
 }
